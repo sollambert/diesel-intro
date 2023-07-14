@@ -17,6 +17,7 @@ pub fn establish_connection() -> SqliteConnection {
 
 pub fn create_post(conn: &mut SqliteConnection, title: &str, body: &str) -> Post {
     use crate::schema::posts;
+    use crate::schema::posts::dsl::id;
     use diesel::result::Error;
     let new_post = NewPost { title, body };
 
@@ -29,7 +30,7 @@ pub fn create_post(conn: &mut SqliteConnection, title: &str, body: &str) -> Post
             .execute(conn)?;
 
         Ok(posts::table
-            .order(posts::dsl::id.desc())
+            .order(id.desc())
             .limit(inserted_count as i64)
             .select(Post::as_select())
             .load(conn))
